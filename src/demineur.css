@@ -1,3 +1,23 @@
-html {
-    background-color: grey;
+
+._demineur {
+    display: flex;
+    flex-direction: column;
+}
+
+._d_row {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 1.5rem;
+}
+
+._d_case {
+    height: calc(1.5rem - 6px);
+    width: calc(1.5rem - 6px);
+    border: 3px outset darkgray;
+    background-color: lightgray;
+}
+
+._d_mine {
+    border-color: yellow;
+    background-color: orangered;
 }
