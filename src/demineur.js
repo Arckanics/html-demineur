@@ -24,6 +24,16 @@ function case_drawing(_target, _grid) {
     _target.opened = true
 }
 
+function draw_mine(_target, _grid) {
+    if (_target.opened == true) {
+        return false;
+    }
+    const {x,y} = _target.coord
+    let query = `._d_case[x="${x}"][y="${y}"]`
+    let _node = _grid.querySelector(query)
+    _node.classList.add('_d_mine')
+}
+
 function case_opening(_target, _board, _grid, fromUser) {
     if (fromUser == true && _target.opened == true) {
         return false;
@@ -62,7 +72,7 @@ function case_opening(_target, _board, _grid, fromUser) {
 function update_all(_board) {
     for (let y = 0; y < _board.length; y++) {
         for (let x = 0; x < _board.length; x++) {
-            
+            _board[y][x].opened = true
         }
     }
 }
@@ -75,6 +85,7 @@ function update_demineur(_target, _board, _grid) {
     const {x,y} = _target.coord
     const scale = _board.length
     if (_target.mine == 1) {
+        draw_mine(_target, _grid)
         update_all(_board)
     } else {
         case_opening(_target, _board, _grid, true)
@@ -111,7 +122,7 @@ function init_game(scale, _window, _board) {
     })
 }
 
-function demineur_init(scale = 10, element = 'pixels-demineur', force = 0.1) {
+function demineur_init(scale = 28, element = 'pixels-demineur', force = 0.1) {
     const _window = document.getElementById('pixels-demineur')
     const _head = document.head
     const _css = document.createElement('link')

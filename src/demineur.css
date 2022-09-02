@@ -36,9 +36,11 @@
 ._d_case._d_mine {
     margin: 2px;
     border: none;
-    background-color: hsla(0, 100%, 50%, .7);
+    background-color: hsla(0, 100%, 50%, .2);
     box-shadow: 3px 3px 4px 0 hsl(0, 0%, 0%, .7) inset;
-    background-image: none;
+    background-image: url('/src/bombe.png');
+    background-size: cover;
+    background-position: center;
 }
 
 ._d_case._d_opened {
