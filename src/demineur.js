@@ -21,9 +21,14 @@ function case_drawing(_target, _grid) {
         _node.setAttribute('style', `color: ${color[_text]}`)
         _node.innerText = _text
     }
+    _target.opened = true
 }
 
-function case_opening(_target, _board, _grid) {
+function case_opening(_target, _board, _grid, fromUser) {
+    if (fromUser == true && _target.opened == true) {
+        return false;
+    }
+    
     let _open_section = [_target]
     let _loop_section = []
     let cursor = {..._target.coord}; cursor.x--; cursor.y--;
@@ -48,7 +53,7 @@ function case_opening(_target, _board, _grid) {
         v.opened = true
     })
     _loop_section.map((v) => {
-        case_opening(v, _board, _grid)
+        case_opening(v, _board, _grid, false)
     })
 }
 
@@ -72,7 +77,7 @@ function update_demineur(_target, _board, _grid) {
     if (_target.mine == 1) {
         update_all(_board)
     } else {
-        case_opening(_target, _board, _grid, scale)
+        case_opening(_target, _board, _grid, true)
     }
 }
 
