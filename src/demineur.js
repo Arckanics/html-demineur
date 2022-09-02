@@ -1,59 +1,85 @@
 
-function update_demineur(_target, _board, pos, _grid) {
-    let _update_cases = []
-    let _auto_opening = []
-    if (_target.mine == 1) {
-        // loose function
-    } else {
-        _update_cases.push({_case: _target, _pos: pos})
-        pos.x--
-        pos.y--
-        let {x,y} = pos
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (i !== 1 || j !== 1) {
-                    try {
-                        let _case = _board[y+i][x+j]
-                        let _pos = {
-                            y:y+i,
-                            x:x+j
+
+// petite fonctions
+
+function test_case(c, max) {
+    const {x,y} = c
+    if (0 <= x && x < max && 0 <= y && y < max) {
+        return true
+    }
+    return false
+}
+
+function case_drawing(_target, _grid) {
+    let color = ['blue', 'green', 'red', 'darkblue', 'darkred', 'darkaqua', 'black', 'aztecpurple']
+    const {x,y} = _target.coord
+    let query = `._d_case[x="${x}"][y="${y}"]`
+    let _text = _target.spot
+    let _node = _grid.querySelector(query)
+    _node.classList.add('_d_opened')
+    if (_text > 0) {
+        _node.setAttribute('style', `color: ${color[_text]}`)
+        _node.innerText = _text
+    }
+}
+
+function case_opening(_target, _board, _grid) {
+    let _open_section = [_target]
+    let _loop_section = []
+    let cursor = {..._target.coord}; cursor.x--; cursor.y--;
+    for (let _y = 0; _y < 3; _y++) {
+        for (let _x = 0; _x < 3; _x++) {
+            if (test_case({x:cursor.x+_x,y:cursor.y+_y}, _board.length)) {
+                let _case = _board[cursor.y+_y][cursor.x+_x]
+                if (_case !== _target) {
+                    if (_case.mine == 0 && _case.opened == false) {
+                        if (_case.spot > 0) {
+                            _open_section.push(_case)
+                        } else {
+                            _loop_section.push(_case)
                         }
-                        if (_case.mine == 0 && _case.neighbour == 0 && _case.opened == false) {
-                            _update_cases.push({_case, _pos})
-                            _auto_opening.push({_case, _pos})
-                        } else if (_case.mine == 0 && _case.neighbour > 0 && _case.opened == false) {
-                            _update_cases.push({_case, _pos})
-                        }
-                    } catch {
-                        null
                     }
                 }
             }
+        }        
+    }
+    _open_section.map((v)=>{
+        case_drawing(v,_grid)
+        v.opened = true
+    })
+    _loop_section.map((v) => {
+        case_opening(v, _board, _grid)
+    })
+}
+
+// defaite
+
+function update_all(_board) {
+    for (let y = 0; y < _board.length; y++) {
+        for (let x = 0; x < _board.length; x++) {
+            
         }
     }
+}
 
-    _update_cases.map((v, i) => {
-        const {x,y} = v._pos
-        v._case.opened = true
-        let query = `._d_case[x="${x}"][y="${y}"]`
-        let txt = v._case.neighbour > 0 ? v._case.neighbour : ''
-        try {
-            let html_case = _grid.querySelector(query)
-            html_case.classList.add('_d_opened')
-            html_case.innerText = txt
-        } catch {
-            null
-        }
-    })
 
-    _auto_opening.map((v, i) => {
-        update_demineur(v._case, _board, pos, _grid)
-    })
+
+// initial
+
+function update_demineur(_target, _board, _grid) {
+    const {x,y} = _target.coord
+    const scale = _board.length
+    if (_target.mine == 1) {
+        update_all(_board)
+    } else {
+        case_opening(_target, _board, _grid, scale)
+    }
 }
 
 function init_game(scale, _window, _board) {
     let _grid = document.createElement('section')
         _grid.classList.add('_demineur')
+
     for (let i = 0; i < scale; i++) {
         let _row = document.createElement('section')
         _row.classList.add('_d_row')
@@ -75,12 +101,12 @@ function init_game(scale, _window, _board) {
             y: Number(c.getAttribute('y'))
         }
         c.addEventListener('click', ()=>{
-            update_demineur(_board[pos.y][pos.x], _board, pos, _grid)
-        })
+            update_demineur(_board[pos.y][pos.x], _board, _grid)
+        }, true)
     })
 }
 
-function demineur_init(scale = 16, element = 'pixels-demineur', force = 0.1) {
+function demineur_init(scale = 10, element = 'pixels-demineur', force = 0.1) {
     const _window = document.getElementById('pixels-demineur')
     const _head = document.head
     const _css = document.createElement('link')
@@ -97,8 +123,9 @@ function demineur_init(scale = 16, element = 'pixels-demineur', force = 0.1) {
         for (let j = 0; j < scale; j++) {
             let _case = {
                 mine : 0,
-                neighbour : 0,
-                opened: false
+                spot : 0,
+                opened: false,
+                coord: {x:j,y:i}
             }
             _board[i][j] = _case
         }
@@ -113,31 +140,24 @@ function demineur_init(scale = 16, element = 'pixels-demineur', force = 0.1) {
         if ( _item.mine == 0 ) {
             _item.mine = 1
             _mine--
-            _mineMap.push({
-                pos: {
-                    x: _case,
-                    y: _row
-                }
-            })
+            _mineMap.push(_item)
         }
     }
 
     for (let i = 0; i < _mineMap.length; i++) {
         let _mine = _mineMap[i]
-        let _cursor = {..._mine.pos}
-        let {x,y} = _cursor
-        x--
-        y--
+        let _rel_cursor = { x: _mine.coord.x - 1, y: _mine.coord.y -1 }
+        let {x,y} = _rel_cursor
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 try {
-                    _board[y+i][x+j].neighbour++
+                    _board[y+i][x+j].spot++
                 } catch {
                     null
                 }
             }
         }
     }
-    
+
     init_game(scale, _window, _board)
 }

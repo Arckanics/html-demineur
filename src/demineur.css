@@ -24,9 +24,9 @@
     border-top: none;
     border-left: none;
     border-radius: 4px;
-    background-image: radial-gradient(at top left, hsla(0, 0%, 83%, .2) 10%, transparent 75%);
+    background-image: radial-gradient(at top left, hsla(0, 0%, 45%, .2) 10%, transparent 75%);
     cursor: pointer;
-    line-height: 1.8rem;
+    line-height: 2rem;
     font-size: 1.3rem;
     text-align: center;
     font-weight: bold;
@@ -44,7 +44,7 @@
 ._d_case._d_opened {
     margin: 2px;
     border: none;
-    background-color: hsla(0, 0%, 50%, .7);
+    background-color: hsla(0, 0%, 15%, .7);
     box-shadow: 2px 2px 4px 0 hsl(0, 0%, 0%, .7) inset;
     background-image: radial-gradient(at bottom right, hsla(0, 0%, 83%, .4) 10%, transparent 75%);
 }
