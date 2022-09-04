@@ -142,7 +142,7 @@ function init_game(scale, _window, _board, _mineMap) {
 
     const _sound = new Audio("src/sound.wav")
     _sound.preload
-    _sound.volume = 1
+    _sound.volume = .6
 
     _window.appendChild(_ui_top)
 
@@ -176,7 +176,7 @@ function init_game(scale, _window, _board, _mineMap) {
     })
 }
 
-function demineur_init(scale = 14, element = 'pixels-demineur', force = 0.08) {
+function demineur_init(scale = 16, element = 'pixels-demineur', force = 0.12) {
     const _window = document.getElementById(element)
     const _head = document.head
     const _css = document.createElement('link')
