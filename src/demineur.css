@@ -43,10 +43,28 @@
     background-position: center;
 }
 
+._d_case._d_flag._d_mine {
+    background-color: hsla(100, 100%, 50%, .3);
+}
+
 ._d_case._d_opened {
     margin: 2px;
     border: none;
-    background-color: hsla(0, 0%, 15%, .7);
-    box-shadow: 2px 2px 4px 0 hsl(0, 0%, 0%, .7) inset;
+    background-color: hsla(0, 0%, 45%, .7);
+    box-shadow: 2px 2px 4px 0 hsl(0, 0%, 0%, .4) inset;
     background-image: radial-gradient(at bottom right, hsla(0, 0%, 83%, .4) 10%, transparent 75%);
+    filter: drop-shadow(2px 2px 1px hsla(0,0%,0%,.2));
+    text-shadow: 0 0 2px hsla(0, 0%, 5%, .9);
+}
+
+._d_case._d_flag._d_opened {
+    color: transparent!important;
+    text-shadow: none!important;
+    background-color: hsla(0, 50%, 15%, .7);
+}
+
+._d_case._d_flag {
+    background-image: url("/src/flag.png"), radial-gradient(at top left, hsla(0, 0%, 45%, .3) 10%, transparent 75%);
+    background-size: cover;
+    filter: drop-shadow(2px 2px 1px hsla(0,0%,0%,.6));
 }
