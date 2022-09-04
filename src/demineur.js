@@ -92,7 +92,7 @@ function update_demineur(_target, _board, _grid) {
     }
 }
 
-function init_game(scale, _window, _board) {
+function init_game(scale, _window, _board, _mine) {
     let _grid = document.createElement('section')
         _grid.classList.add('_demineur')
 
@@ -175,5 +175,5 @@ function demineur_init(scale = 28, element = 'pixels-demineur', force = 0.1) {
         }
     }
 
-    init_game(scale, _window, _board)
+    init_game(scale, _window, _board, _mine)
 }
