@@ -1,5 +1,20 @@
 
+// global
+
+let _demineur = {
+    start : false,
+    begin : null,
+    screen: null,
+    timer : null,
+}
+
 // DOM
+
+function timer_display(ms) {
+    let min = String(Math.floor(ms / (1000*60))).padStart(2, '0')
+    let sec = (ms % (1000*60) / 1000).toFixed(0).padStart(2, '0')
+    return min+":"+sec
+}
 
 function test_case(c, max) {
     const {x,y} = c
@@ -82,6 +97,14 @@ function game_won(_board, _mineMap) {
             _case.opened ? opened++ : null
         }
     }
+    if (!_demineur.start) {
+        _demineur.start = true
+        _demineur.begin = Date.now()
+        _demineur.screen.innerText = timer_display(Date.now() - _demineur.begin)
+        _demineur.timer = setInterval(() => {
+            _demineur.screen.innerText = timer_display(Date.now() - _demineur.begin)
+        }, 1000)
+    }
     if (caseCount - opened == flagged && flagged == mineCount) {
         return true
     }
@@ -139,6 +162,10 @@ function init_game(scale, _window, _board, _mineMap) {
         _grid.classList.add('_demineur')
     let _ui_top = document.createElement('section')
         _ui_top.classList.add('_demineur_top')
+    
+    _demineur.screen = document.createElement('div')
+    _demineur.screen.setAttribute('class','_d_timer')
+    _ui_top.appendChild(_demineur.screen)
 
     const _sound = new Audio("src/sound.wav")
     _sound.preload
@@ -177,7 +204,11 @@ function init_game(scale, _window, _board, _mineMap) {
 }
 
 function demineur_init(scale = 16, element = 'pixels-demineur', force = 0.12) {
+    _demineur.start = false
     const _window = document.getElementById(element)
+    while (_window.firstChild) {
+        _window.firstChild.remove()
+    }
     const _head = document.head
     const _css = document.createElement('link')
     _css.href = "src/demineur.css"
