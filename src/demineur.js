@@ -270,7 +270,7 @@ function init_game(scale, _window, _board, _mineMap) {
     })
 }
 
-function demineur_init(scale = 16, element = 'pixels-demineur', force = 0.12) {
+function demineur_init(scale = 14, element = 'pixels-demineur', force = 0.11) {
     _demineur.start = false
     const _window = document.getElementById(element)
     while (_window.firstChild) {
