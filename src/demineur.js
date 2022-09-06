@@ -4,8 +4,10 @@
 let _demineur = {
     start : false,
     begin : null,
-    screen: null,
+    status: 0,
+    currTime: null,
     timer : null,
+    flagleft: 0
 }
 
 // DOM
@@ -86,6 +88,27 @@ function case_opening(_target, _board, _grid, fromUser) {
     })
 }
 
+// interface
+
+function ui_update(cond) {
+    if (cond !== undefined) {
+        clearInterval(_demineur.timer)
+        if (cond) {
+            _demineur.status--
+        } else {
+            _demineur.status++
+        }
+    } else {
+
+    }
+    let emote = _demineur.emotes[_demineur.status]
+    let main = _demineur.parent
+    main.querySelector('._d_emote').replaceWith(emote)
+    main.querySelector('._d_flagCount').innerText = String(_demineur.flagleft).padStart(4, '0')
+
+}
+
+
 // victoire
 
 function game_won(_board, _mineMap) {
@@ -101,10 +124,16 @@ function game_won(_board, _mineMap) {
     if (!_demineur.start) {
         _demineur.start = true
         _demineur.begin = Date.now()
-        _demineur.screen.innerText = timer_display(Date.now() - _demineur.begin)
+        _demineur.status++
+        _demineur.currTime.innerText = timer_display(Date.now() - _demineur.begin)
         _demineur.timer = setInterval(() => {
-            _demineur.screen.innerText = timer_display(Date.now() - _demineur.begin)
+            _demineur.currTime.innerText = timer_display(Date.now() - _demineur.begin)
         }, 50)
+        _demineur.flagleft = mineCount-flagged
+        ui_update()
+    } else {
+        _demineur.flagleft = mineCount-flagged
+        ui_update()
     }
     if (caseCount - opened == flagged && flagged == mineCount) {
         return true
@@ -138,6 +167,7 @@ function update_demineur(_target, _board, _grid, _sound, e, _mineMap) {
         if (_target.opened === false) {
             draw_flag(_target, _grid, query)
             if (game_won(_board, _mineMap)) {
+                ui_update(true)
                 update_all(_board, _grid)
             }
         }
@@ -148,10 +178,12 @@ function update_demineur(_target, _board, _grid, _sound, e, _mineMap) {
         if (_target.mine == 1) {
             _sound.play()
             draw_mine(_target, _grid, query)
+            ui_update(false)
             update_all(_board, _grid)
         } else {
             case_opening(_target, _board, _grid, true, query)
             if (game_won(_board, _mineMap)) {
+                ui_update(true)
                 update_all(_board, _grid)
             }
         }
@@ -164,15 +196,49 @@ function init_game(scale, _window, _board, _mineMap) {
     let _ui_top = document.createElement('section')
         _ui_top.classList.add('_demineur_top')
     
-    _demineur.screen = document.createElement('div')
-    _demineur.screen.setAttribute('class','_d_timer')
-    _ui_top.appendChild(_demineur.screen)
+    _window.classList.add('_d_parent')
+
+    const preloadImg = (imgs) => {
+        let output = []
+        for (let i = 0; i < imgs.length; i++) {
+            let img = new Image();
+            img.src = imgs[i]
+            img.classList.add('_d_emote')
+            output.push(img)
+        }
+        return output;
+    }
+
+    _demineur.emotes = preloadImg([
+        "/src/emote/win.png",
+        "/src/emote/confused.png",
+        "/src/emote/loose.png"
+    ])
+
+    _demineur.currTime = document.createElement('div')
+    _demineur.currTime.setAttribute('class','_d_timer')
+    _demineur.currTime.innerText = "00:00.00"
+    _demineur.parent = _window
+    _demineur.ui_top = _ui_top
+
+    let _emote = document.createElement('img')
+    _emote.classList.add('_d_emote')
+    let _flag = document.createElement('div')
+    _flag.classList.add('_d_flagCount')
+    
+
+    _ui_top.appendChild(_demineur.currTime)
+    _ui_top.appendChild(_emote)
+    _ui_top.appendChild(_flag)
+
 
     const _sound = new Audio("src/sound.wav")
     _sound.preload
     _sound.volume = .6
 
     _window.appendChild(_ui_top)
+
+    ui_update()
 
     for (let i = 0; i < scale; i++) {
         let _row = document.createElement('section')
