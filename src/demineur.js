@@ -11,9 +11,10 @@ let _demineur = {
 // DOM
 
 function timer_display(ms) {
-    let min = String(Math.floor(ms / (1000*60))).padStart(2, '0')
-    let sec = (ms % (1000*60) / 1000).toFixed(0).padStart(2, '0')
-    return min+":"+sec
+    ms = ms/1000
+    let min = String(Math.floor(ms / 60)).padStart(2,'0')
+    let sec = (ms % 60).toFixed(2).padStart(5,'0')
+    return `${min}:${sec}`
 }
 
 function test_case(c, max) {
@@ -103,7 +104,7 @@ function game_won(_board, _mineMap) {
         _demineur.screen.innerText = timer_display(Date.now() - _demineur.begin)
         _demineur.timer = setInterval(() => {
             _demineur.screen.innerText = timer_display(Date.now() - _demineur.begin)
-        }, 1000)
+        }, 50)
     }
     if (caseCount - opened == flagged && flagged == mineCount) {
         return true

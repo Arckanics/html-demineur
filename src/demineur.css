@@ -1,4 +1,9 @@
 
+@font-face {
+    font-family: "digit-font";
+    src: url("/src/DS-DIGI.TTF");
+}
+
 ._demineur {
     display: flex;
     flex-direction: column;
@@ -7,6 +12,33 @@
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
+}
+
+._demineur_top {
+    font-size: 2.5rem;
+    font-family: "digit-font";
+    color: white;
+    padding: calc(1rem + 2px);
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    background-color: hsl(210,10%,15%);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+._d_timer {
+    border: 1px solid hsl(210,10%,4%);
+    border-right: none;
+    border-bottom: none;
+    border-radius: 4px;
+    width: 10rem;
+    padding-left: 1.2rem;
+    line-height: 4rem;
+    text-align: left;
+    text-shadow: 3px 3px 1px hsla(0, 0%, 5%, .8);
+    background-color: hsla(0, 0%, 5%, .4);
 }
 
 ._d_row {
