@@ -7,27 +7,29 @@ let _demineur = {
     status: 0,
     currTime: null,
     timer : null,
-    flagleft: 0
+    flagleft: 0,
+    gameSetting: {
+        scale: 14, 
+        element: 'pixels-demineur', 
+        force: 0.11
+    }
 }
 
 // DOM
 
-function timer_display(ms) {
+const timer_display = (ms) => {
     ms = ms/1000
     let min = String(Math.floor(ms / 60)).padStart(2,'0')
     let sec = (ms % 60).toFixed(2).padStart(5,'0')
     return `${min}:${sec}`
 }
 
-function test_case(c, max) {
+const test_case = (c, max) => {
     const {x,y} = c
-    if (0 <= x && x < max && 0 <= y && y < max) {
-        return true
-    }
-    return false
+    return (0 <= x && x < max && 0 <= y && y < max) ? true : false
 }
 
-function case_drawing(_target, _grid, query, endgame) {
+const case_drawing = (_target, _grid, query, endgame) => {
     if (_target.flag === true && !endgame) {
         return false
     }
@@ -42,23 +44,22 @@ function case_drawing(_target, _grid, query, endgame) {
     _target.opened = true
 }
 
-function draw_flag(_target, _grid, query) {
+const draw_flag = (_target, _grid, query) => {
     let _node = _grid.querySelector(query)
     _target.flag = !_target.flag
     _node.classList.toggle('_d_flag')
 }
 
-function draw_mine(_target, _grid, query) {
+const draw_mine = (_target, _grid, query) => {
     _target.opened = true
     let _node = _grid.querySelector(query)
     _node.classList.add('_d_mine')
 }
 
-function case_opening(_target, _board, _grid, fromUser) {
+const case_opening = (_target, _board, _grid, fromUser) => {
     if (fromUser == true && _target.opened == true) {
         return false;
     }
-    
     let _open_section = [_target]
     let _loop_section = []
     let cursor = {..._target.coord}; cursor.x--; cursor.y--;
@@ -81,7 +82,7 @@ function case_opening(_target, _board, _grid, fromUser) {
     _open_section.map((v)=>{
         const {x,y} = v.coord
         let query = `._d_case[x="${x}"][y="${y}"]`
-        case_drawing(v,_grid, query)
+        case_drawing(v, _grid, query)
     })
     _loop_section.map((v) => {
         case_opening(v, _board, _grid, false)
@@ -90,7 +91,7 @@ function case_opening(_target, _board, _grid, fromUser) {
 
 // interface
 
-function ui_update(cond) {
+const ui_update = (cond) => {
     if (cond !== undefined) {
         clearInterval(_demineur.timer)
         if (cond) {
@@ -98,8 +99,6 @@ function ui_update(cond) {
         } else {
             _demineur.status++
         }
-    } else {
-
     }
     let emote = _demineur.emotes[_demineur.status]
     let main = _demineur.parent
@@ -111,7 +110,7 @@ function ui_update(cond) {
 
 // victoire
 
-function game_won(_board, _mineMap) {
+const game_won = (_board, _mineMap) => {
     let caseCount = Math.pow(_board.length, 2)
     let opened = 0, flagged = 0, mineCount = _mineMap.length
     for (let y = 0; y < _board.length; y++) {
@@ -143,7 +142,7 @@ function game_won(_board, _mineMap) {
 
 // defaite
 
-function update_all(_board, _grid) {
+const update_all = (_board, _grid) => {
     for (let y = 0; y < _board.length; y++) {
         for (let x = 0; x < _board.length; x++) {
             let _case = _board[y][x]
@@ -159,7 +158,7 @@ function update_all(_board, _grid) {
 
 // initial
 
-function update_demineur(_target, _board, _grid, _sound, e, _mineMap) {
+const update_demineur = (_target, _board, _grid, _sound, e, _mineMap) => {
     const {x,y} = _target.coord
     let query = `._d_case[x="${x}"][y="${y}"]`
     const scale = _board.length
@@ -190,7 +189,7 @@ function update_demineur(_target, _board, _grid, _sound, e, _mineMap) {
     }
 }
 
-function init_game(scale, _window, _board, _mineMap) {
+const init_game = (scale, _window, _board, _mineMap) => {
     let _grid = document.createElement('section')
         _grid.classList.add('_demineur')
     let _ui_top = document.createElement('section')
@@ -270,17 +269,24 @@ function init_game(scale, _window, _board, _mineMap) {
     })
 }
 
-function demineur_init(scale = 14, element = 'pixels-demineur', force = 0.11) {
+function demineur_init() {
+    const {scale, element, force} = _demineur.gameSetting
     _demineur.start = false
     const _window = document.getElementById(element)
     while (_window.firstChild) {
         _window.firstChild.remove()
     }
     const _head = document.head
-    const _css = document.createElement('link')
-    _css.href = "src/demineur.css"
-    _css.rel = "stylesheet"
-    _head.append(_css)
+
+    console.log([..._head.querySelectorAll('link[href="src/demineur.css"]')].length);
+
+    if ([..._head.querySelectorAll('link[href="src/demineur.css"]')].length == 0) {
+        const _css = document.createElement('link')
+        _css.href = "src/demineur.css"
+        _css.rel = "stylesheet"
+        _head.append(_css)
+    }
+    
 
     let _board = []
     for (let i = 0; i < scale; i++) {

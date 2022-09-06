@@ -11,6 +11,10 @@
     flex-direction: column;
 }
 
+._d_restart {
+    
+}
+
 ._demineur {
     user-select: none;
     -webkit-user-select: none;
