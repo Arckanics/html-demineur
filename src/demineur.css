@@ -13,12 +13,25 @@
 }
 
 ._d_restart {
+    color: white;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid hsl(210,10%,5%);
+    border-radius: 1rem;
+    border-top: none;
+    border-left: none;
     position: absolute;
     line-height: 4rem;
     font-size: 3rem;
+    background-image: 
+        radial-gradient(at top left, hsla(0, 0%, 45%, .1) 10%, transparent 75%),
+        linear-gradient(transparent , hsla(0, 0%, 45%, .2) 15%, transparent 90%);
     background-color: hsl(210,10%,15%);
     padding: 0 1rem;
-    top: calc(50% + 2.5rem + 1px);
+    box-shadow: 2px 2px 8px 0 hsla(0, 0%, 45%, .4) inset,
+        2px 2px 8px 0 hsla(0, 0%, 5%, .8);
+    top: calc(50% + 2.5rem + 2px);
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
