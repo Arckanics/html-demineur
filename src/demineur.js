@@ -11,7 +11,8 @@ let _demineur = {
     gameSetting: {
         scale: 14, 
         element: 'pixels-demineur', 
-        force: 0.11
+        force: 0.11,
+        resetTxt: "reset"
     }
 }
 
@@ -95,10 +96,22 @@ const ui_update = (cond) => {
     if (cond !== undefined) {
         clearInterval(_demineur.timer)
         if (cond) {
-            _demineur.status--
+            _demineur.status = 0
         } else {
-            _demineur.status++
+            _demineur.status = 2
         }
+        let reset = document.createElement('button')
+        reset.innerText = _demineur.gameSetting.resetTxt
+        reset.classList.add('_d_restart')
+        _demineur.parent.appendChild(reset)
+        reset.addEventListener('click', (e)=>{
+            e.preventDefault()
+            e.stopPropagation()
+            _demineur.status = 0
+            _demineur.start = false
+            _demineur.flagleft = 0
+            demineur_init()
+        })
     }
     let emote = _demineur.emotes[_demineur.status]
     let main = _demineur.parent
@@ -277,8 +290,6 @@ function demineur_init() {
         _window.firstChild.remove()
     }
     const _head = document.head
-
-    console.log([..._head.querySelectorAll('link[href="src/demineur.css"]')].length);
 
     if ([..._head.querySelectorAll('link[href="src/demineur.css"]')].length == 0) {
         const _css = document.createElement('link')

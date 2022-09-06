@@ -9,10 +9,16 @@
     background-color: hsl(210,10%,15%);
     display: inline-flex;
     flex-direction: column;
+    position: relative;
 }
 
 ._d_restart {
-    
+    position: absolute;
+    line-height: 4rem;
+    font-size: 3rem;
+    top: calc(50% + 2.5rem + 1px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }
 
 ._demineur {
